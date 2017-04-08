@@ -97,6 +97,8 @@ def get_one_df(file_name, customer):
                 action_hour.append(row[1][:13])
                 direction = 'INCOMING' if row[5] == '1' else 'OUTGOING'
                 word.append(row[2] + '_' + direction + '_' + row[3] + '_' + row[4])
+            else:
+                pass
 
     df_dict = {}
     df_dict['action_hour'] = action_hour
