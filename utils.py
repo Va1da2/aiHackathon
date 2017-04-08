@@ -8,7 +8,7 @@ from collections import Counter
 # Customers
 def get_customers_list(file_name):
     customers = set()
-    with open(file_name, "rt", encoding='utf16') as csvfile:
+    with open(file_name, "rt", encoding='utf-16-le') as csvfile:
         datareader = csv.reader(csvfile, delimiter='\t')
         next(datareader, None)
         for row in datareader:
@@ -80,7 +80,7 @@ def encode_words(reviews, word_to_int):
 
 def get_labels(file, users):
     labels_list = []
-    labels = pd.read_csv(file, sep='\t', encoding='utf-16')
+    labels = pd.read_csv(file, sep='\t', encoding='utf-16-le')
     for user in users:
         labels_list.append(labels[labels['customer'] == user]['gone'].tolist()[0])
     return labels_list
@@ -89,7 +89,7 @@ def get_one_df(file_name, customer):
     action_hour = []
     word = []
 
-    with open(file_name, "rt", encoding='utf16') as csvfile:
+    with open(file_name, "rt", encoding='utf-16-le') as csvfile:
         datareader = csv.reader(csvfile, delimiter='\t')
         next(datareader, None)
         for row in datareader:
