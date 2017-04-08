@@ -74,5 +74,49 @@ def get_labels(file, users):
         labels_list.append(labels[labels['customer'] == user]['gone'].tolist()[0])
     return labels_list
 
+def get_one_df(file_name, customer):
+    action_hour = []
+    word = []
+
+    with open(file_name, "rt", encoding='utf16') as csvfile:
+        datareader = csv.reader(csvfile, delimiter='\t')
+        next(datareader, None)
+        for row in datareader:
+            if int(row[0]) == customer:
+                action_hour.append(row[1][:13])
+                direction = 'INCOMING' if row[5] == '1' else 'OUTGOING'
+                word.append(row[2] + '_' + direction + '_' + row[3] + '_' + row[4])
+
+    df_dict = {}
+    df_dict['action_hour'] = action_hour
+    df_dict['word'] = word
+    
+    return pd.DataFrame(df_dict)
+
+# Get review for one client (list of words)
+def get_review_from_raw_csv_big(files, customer, dates_df):
+    df1 = get_one_df(files[0], customer)
+    df2 = get_one_df(files[1], customer)
+    df3 = get_one_df(files[2], customer)
+    
+    df = pd.concat([df1, df2, df3])
+    
+    merged = df.merge(dates_df, left_on='action_hour', right_on='action_date_hour', how='outer')
+    merged = merged.sort_values(by='action_date_hour').fillna('NOTHING')
+
+    df = merged.groupby('action_date_hour')['word'].apply(list)
+    
+    out_list = []
+    for i, d in df.iteritems():
+        out_list.append(np.random.choice(d))
+
+    return  out_list
+
+# Customers
+def get_customers_list_big(files):
+    customers1 = get_customers_list(files[0])
+    customers2 = get_customers_list(files[1])
+    customers3 = get_customers_list(files[2])
+    return list(set(customers1+customers2+customers3))
 
 
