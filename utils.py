@@ -4,6 +4,16 @@ import matplotlib.pyplot as plt
 import datetime
 from collections import Counter
 
+# Customers
+def get_customers_list(file_name):
+    customers = set()
+    with open(file_name, "rt", encoding='utf16') as csvfile:
+        datareader = csv.reader(csvfile, delimiter='\t')
+        next(datareader, None)
+        for row in datareader:
+            customers.add(int(row[0]))
+    
+    return list(customers)
 
 # Function for generating dates DataFrame
 def get_all_dates(start, end):
